@@ -1,6 +1,8 @@
 # SI_QA
 All Questions and Answers in Syllabus of Statistical Inference - JHU Coursera
 
+# Take Note: dd. 21-7-2016 these files were uploaded to be reviewed by an instructor. The answers here are my own - and might therefore be complete wrong! The exercises that have youtube and links attached are - for now - not included (well, I tried to hide them). In a more definite version they will be included. Perhaps even with my own interpretation of the correct answer added to it (ultimitely this has started for me to understand the theory). 
+
 ## remarks on the layout
 
 ### .HTML
