@@ -1,0 +1,822 @@
+---
+title       : Statistical inference
+subtitle    : Exercises and their answers
+author      : Brian Caffo, Jeff Leek, Roger Peng (assembly of exercises and all answers by <a href="https://www.sledgehammer-productions.nl" target="_blank">Henriette Hamer</a>)
+job         : Johns Hopkins Bloomberg School of Public Health
+logo        : bloomberg_shield.png
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+url:
+lib: ../../librariesNew
+assets: ../../assets
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+<!-- add target="_blank" to each hyperlink, it being my trademark -->
+
+<h2 id="leanpub-auto-probability"><span class="section-number">1. </span>Introduction</h2>
+
+<ol class="numeric">
+<!-- question -->
+<li>The goal of statistical inference is to?
+<ol type="a">
+<li>Infer facts about a population from a sample.</li>
+<li>Infer facts about the sample from a population.</li>
+<li>Calculate sample quantities to understand your data.</li>
+<li>To torture Data Science students.</li>
+</ol>
+<BR><BR><BR>Answer:<BR>
+A. Infer facts about a population from a sample.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The goal of randomization of a treatment in a randomized trial is to?
+<ol type="a">
+<li>It doesn't really do anything.</li>
+<li>To obtain a representative sample of subjects from the population of interest.</li>
+<li>Balance unobserved covariates that may contaminate the comparison between the treated and control groups.</li>
+<li>To add variation to our conclusions.</li>
+</ol>
+<BR><BR><BR>Answer:<BR>
+C: Balance unobserved covariates that may contaminate the comparison between the treated and control groups.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>Probability is ?
+<ol type="a">
+<li>A population quantity that we can potentially estimate from data.</li>
+<li>A data quantity that does not require the idea of a population.</li>
+</ol>
+<BR><BR><BR>Answer:<BR>
+A. A population quantity that we can potentially estimate from data.
+<BR><BR>
+</li>
+</ol>
+
+
+<h2 id="leanpub-auto-probability"><span class="section-number">2. </span>Probability</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>Can you add the probabilities of any two events to get the probability of at least one occurring?
+<BR><BR><BR>Answer:<BR>
+Yes, but you have to take into account the fact that they can occur both. $P(A \cup A) = P(A) + P(B) - P(A \cap B)$
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>I define a PMF, $p$ so that for $x = 0$ and $x=1$ we have $p(0) = -0.1$ and $p(1) = 1.1$. Is this a valid PMF?
+<BR><BR><BR>Answer:<BR>
+No, for a valid PMF all $p(x) \ge 0$, and $p(0) \lt 0$
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>What is the probability that 75% or fewer calls get answered in a randomly sampled day from the population distribution from this chapter?
+<BR><BR><BR>Answer:<BR>
+```{r}
+# for elaborate explanation, see syllabus text, as it's literaly taken from it
+1.5 * 0.75 / 2
+```
+
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The 97.5th percentile of a distribution is?
+<BR><BR><BR>Answer:<BR>
+The point on the x-axis where the surface below the density curve left of that point is equal to 0.975.<BR>
+$F(x) = P(X \le x) = 0.975$
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>Consider influenza epidemics for two parent heterosexual families. Suppose that the probability is 15% that at least one of the parents has contracted the disease. The probability that the father has contracted influenza is 10% while that the mother contracted the disease is 9%. What is the probability that both contracted influenza expressed as a whole number percentage?
+<a href="http://youtu.be/CvnmoCuIN08?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution to this problem.</a> and
+<a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#3">see a written out solution.</a>
+</li>-->
+
+<!-- question --><!--
+<li>A random variable, $X$, is uniform, a box from 0 to 1 of height 1. (So that it's density is $f(x) = 1$ for $0\leq x \leq 1$.) What is it's median expressed to two decimal places? <a href="http://youtu.be/UXcarD-1xAM?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution to this problem
+here</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#4">see written solutions here</a>.</li>-->
+
+<!-- question --><!--
+<li>If a continuous density that never touches the horizontal axis is symmetric about zero, can we say that its associated median is zero? <a href="http://youtu.be/sn48CGH_TXI?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a worked out solution to this problem here</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#9">see the question and a typed up answer here</a>
+</li>-->
+</ol>
+
+<h2 id="leanpub-auto-conditional-probability"><span class="section-number">3. </span>Conditional probability</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>I pull a card from a deck and do not show you the result. I say that the resulting card is a heart. What is the probability that it is the queen of hearts?
+<BR><BR><BR>Answer:<BR>
+$\frac {1}{13}$.<BR>
+$P(A)$ :probability of drawing a queen (which is $\frac{4}{52} = \frac{1}{13}$)<BR>
+$P(B)$: probability of drawing a heart (which is $\frac{13}{52} = \frac{1}{4}$)<BR>
+$P(A | B) = \frac {P(A \cap B)}{P(B)} = \frac{P(A)P(B)}{P(B)}  = P(A) = \frac{1}{13}$<BR>
+$P(A \cap B) = P(A)P(B)$ is valid because the probability of drawing a queen is independent of the suit, and vice versa.
+<BR><BR>
+</li>
+<li>The odds associated with a probability, $p$, are defined as?
+<BR><BR><BR>Answer:<BR>
+$\frac{p}{1-p}$<BR>
+$\frac{P(success)}{P(failure)}$
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The probability of getting two sixes when rolling a pair of dice is?
+<BR><BR><BR>Answer:<BR>
+$\frac{1}{36}$, assuming they're both fair dice.<BR>
+$P(6) \times P(6) = \frac{1}{6} \times \frac{1}{6} = \frac{1}{36}$
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>The probability that a manuscript gets accepted to a journal is 12% (say). However,
+given that a revision is asked for, the probability that it gets accepted
+is 90%. Is it possible that the probability that a manuscript has a revision
+asked for is 20%? <a href="http://youtu.be/E4kE4M1J15s?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video of this problem getting solved</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#3">see
+the worked out solutions here</a>.</li>-->
+
+<!-- question --><!--
+<li>Suppose 5% of housing projects have issues with asbestos. The sensitivity of a test
+for asbestos is 93% and the specificity is 88%. What is the probability that a
+housing project has no asbestos given a negative test expressed as a percentage
+to the nearest percentage point? <a href="https://www.youtube.com/watch?v=rbI97tSvGvQ&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=11">Watch a video solution here</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#5">see the
+worked out problem here</a>.</li>-->
+</ol>
+
+<h2 id="leanpub-auto-expected-values"><span class="section-number">4. </span>Expected values</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>A standard die takes the values 1, 2, 3, 4, 5, 6 with equal probability. What is the expected value?
+<BR><BR><BR>Answer:<BR>
+3.5<BR>
+$\bar X = \sum_{i=1}^n x_i p(x_i)$ where $p(x_i) = 1/n$<BR>
+$E[X] = 1 \times \frac{1}{6} + 2 \times \frac{1}{6} +
+    3 \times \frac{1}{6} + 4 \times \frac{1}{6} +
+    5 \times \frac{1}{6} + 6 \times \frac{1}{6} = 3.5$
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>Consider a density that is uniform from -1 to 1. (I.e. has height equal to 1/2 and looks like a box starting at -1 and ending at 1). What is the mean of this distribution?
+<BR><BR><BR>Answer:<BR>
+0
+```{r}
+qunif(0.50, min=-1, max=1)
+```
+
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>If a population has mean $\mu$, what is the mean of the distribution of averages of 20 observations from this distribution?
+<BR><BR><BR>Answer:<BR>
+$\mu$, for the mean the size of the sample is of no influence.
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>You are playing a game with a friend where you flip a coin and if it comes up heads you give her $X$ dollars and if it comes up tails she gives you $Y$ dollars. The odds that the coin is heads is $d$. What is your expected earnings? <a href="http://youtu.be/5J88Zq0q81o?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video of the solution to this problem</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#5">look at the problem and the solution here.</a>.</li>-->
+
+<!-- question --><!--
+<li>If you roll ten standard dice, take their average, then repeat this process over and over and construct a histogram what would it be centered at?
+<a href="https://www.youtube.com/watch?v=ia3n2URiJaw&amp;index=16&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution here</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#11">see the original problem here</a>.</li>-->
+</ol>
+
+
+<h2 id="leanpub-auto-variation"><span class="section-number">5. </span>Variation</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>If I have a random sample from a population, the sample variance is an estimate of?
+<ol type="a">
+<li>The population standard deviation.</li>
+<li>The population variance.</li>
+<li>The sample variance.</li>
+<li>The sample standard deviation.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+B: The population variance.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The distribution of the sample variance of a random sample from a population is centered at what?
+<ol type="a">
+<li>The population variance.</li>
+<li>The population mean.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: The population variance.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>I keep drawing samples of size $n$ from a population with variance $\sigma^2$ and taking their average. I do this thousands of times. If I were to take the variance of the collection of averages, about what would it be?
+<BR><BR><BR>Answer:<BR>
+$2 \times \frac {\sigma^2}{n}$<BR>
+<font style="color:red"> I couldn't find the theory behind this! Intuitively I agree, but I don't trust my intuition (in statistics)</font>
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>You get a random sample of $n$ observations from a population and take their average. You would like to estimate the variability of averages of $n$ observations from this population to better understand how precise of an estimate it is. Do you need to repeated collect averages to do this?
+<ol type="a">
+<li>No, we can multiply our estimate of the population variance by $1/n$ to get a good estimate of the variability of the average.</li>
+<li>Yes, you have to get repeat averages.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A. No, we can multiply our estimate of the population variance by $1/n$ to get a good estimate of the variability of the average.<BR>
+<font style="color:red"> But I'm not really sure.</font>
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>A random variable takes the value -4 with probability .2 and 1 with probability .8. What
+is the variance of this random variable? <a href="http://youtu.be/Em-xJeQO1rc?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution to this problem.</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#6">look at a version with a worked out solution.</a>
+</li>-->
+
+<!-- question --><!--
+<li>If $\bar X$ and $\bar Y$ are comprised of n iid random variables arising from distributions having means $\mu_x$ and $\mu_y$, respectively and common variance $\sigma^2$ what is the variance $\bar X - \bar Y$?
+<a href="http://youtu.be/7zJhPzX6jns?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution to this problem here</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#7">see a typed up solution here</a>
+</li>-->
+
+<!-- question --><!--
+<li>Let $X$ be a random variable having standard deviation $\sigma$. What can be said about the variance of $X /\sigma$? <a href="http://youtu.be/0WUj18_BUPA?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution to this
+problem here</a> and
+<a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#8">typed  up solutions here</a>.</li>-->
+
+<!-- question --><!--
+<li>Consider the following pmf given in R by the code <code>p &lt;- c(.1, .2, .3, .4)</code>
+and 'x &lt;- 2 : 5`. What is the variance? <a href="http://youtu.be/HSn8n4DsGSg?list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution to this problem here</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw1.html#10">here is the problem worked out</a>.</li>-->
+
+<!-- question --><!--
+<li>If you roll ten standard dice, take their average, then repeat this process over and over and construct a histogram,  what would be its variance expressed to 3 decimal places?
+<a href="https://www.youtube.com/watch?v=MLfo9zz1zX4&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=17">Watch a video solution here</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#12">see the text here</a>.</li>-->
+</ol>
+
+<h2 id="leanpub-auto-some-common-distributions"><span class="section-number">6. </span>Some common distributions</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>Your friend claims that changing the font to comic sans will result in more ad revenue on your web sites. When presented in random order, 9 pages out of 10 had more revenue when the font was set to comic sans. If it was really a coin flip for these 10 sites, what's the probability of getting 9 or 10 out of 10 with more revenue for the new font?
+<BR><BR><BR>Answer:<BR>
+${10 \choose 9} \times 0.5^{9} \times 0.5^{10-9} + {10 \choose 10} \times 0.5^{10} \times 0.5^{10-10}$<BR>
+assuming a fair coin.<BR>
+```{r}
+choose(10, 9) * 0.5^(9) * 0.5^(10-9) + choose(10, 10) * 0.5^(10) * 0.5^(10-10)
+pbinom(8, size=10, prob=0.5, lower.tail = FALSE)
+# note that you put in 8 and not 9 into the R-function.
+```
+
+
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>A software company is doing an analysis of documentation errors of their products. They sampled their very large codebase in chunks and found that the number of errors per chunk was approximately normally distributed with a mean of 11 errors and a standard deviation of 2. When randomly selecting a chunk from their codebase, what's the probability of fewer than 5 documentation errors?
+<BR><BR><BR>Answer:<BR>
+$\mu = 11$<BR>
+$\sigma = 2$<BR>
+$P(x=5) = \frac {5 - \mu}{\sigma} = \frac {5-11}{2} = -3$ (think $3\sigma$)
+```{r}
+pnorm(5, mean=11, sd=2, lower.tail = TRUE)
+```
+<font style="color:red">Here I get lost. Based on "99% of the normal density lies within 3sd" (so 1% outside, on both sides, so on one side 0.5%) I would have expected (1-0.99)/2 = 0.005 as an (approximate) answer. 0.0013 is not really 0.005 ...</font>
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The number of search entries entered at a web site is Poisson at a rate of 9 searches per minute. The site is monitored for 5 minutes. What is the probability of 40 or fewer searches in that time frame?
+<BR><BR><BR>Answer:<BR>
+$\lambda = 9$ searches/minute<BR>
+$t = 5$ minutes
+```{r}
+lambda <- 9
+t <- 5
+ppois(40, lambda * t, lower.tail = TRUE)
+```
+
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>Suppose that the number of web hits to a particular site are approximately normally
+distributed with a mean of 100 hits per day and a standard deviation of 10 hits per day. What's the probability that a given day has fewer than 93 hits per day
+expressed as a percentage to the nearest percentage point?
+<a href="https://www.youtube.com/watch?v=E-ancc7iTho&amp;index=10&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#4">see the problem</a>.</li>-->
+
+<!-- question --><!--
+<li>Suppose that the number of web hits to a particular site are approximately normally
+distributed with a mean of 100 hits per day and a standard deviation of 10 hits per day.
+What number of web hits per day represents the number so that only
+5% of days have more hits? <a href="https://www.youtube.com/watch?v=rv48_5C8gx4&amp;index=12&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#6">see the problem and solution</a>.</li>-->
+
+<!-- question --><!--
+<li>Suppose that the number of web hits to a particular site are approximately normally
+distributed with a mean of 100 hits per day and a standard deviation of 10 hits per day.
+Imagine taking a random sample of 50 days. What number of web hits would
+be the point so that only 5% of averages of 50 days of web traffic have more hits?
+<a href="https://www.youtube.com/watch?v=c_B2AuOhdzg&amp;index=13&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#7">see the problem and solution</a>.</li>-->
+
+<!-- question --><!--
+<li>You don't believe that your friend can discern good wine from cheap. Assuming
+that you're right, in a blind test where you randomize 6 paired varieties (Merlot,
+Chianti, .) of cheap and expensive wines.
+What is the change that she gets 5 or 6 right? <a href="https://www.youtube.com/watch?v=ILm2OUl6p_w&amp;index=14&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#8">see the original problem</a>.</li>-->
+
+<!-- question --><!--
+<li>The number of web hits to a site is Poisson with mean 16.5 per day.
+What is the probability of getting 20 or fewer in 2 days? <a href="https://www.youtube.com/watch?v=PMPFbwtpp1k&amp;index=18&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#12">see a written solution</a>.</li>-->
+
+<!-- question -->
+</ol>
+
+<h2 id="leanpub-auto-asymptopia"><span class="section-number">7. </span>Asymptopia</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>I simulate 1,000,000 standard normals. The LLN says that their sample average must be close to?
+<BR><BR><BR>Answer:<BR>
+0, the mean of the population (which is standard normal, so $\mu =0$)
+<BR><BR>
+
+</li>
+<li>About what is the probability of getting 45 or fewer heads out 100 flips of a fair coin? (Use the CLT, not the exact binomial calculation).<BR><BR><BR>Answer:<BR>
+With $\frac{\hat p - p}{\sqrt{p(1-p)/n}}$, <BR>
+$\frac{0.45 - 0.5}{\sqrt{0.5(1-0.5)/100}} = \frac {-0.05}{\sqrt{0.5^{2}/100}} = \frac {-0.05}{0.5/\sqrt{100}} = \frac {-0.05}{0.5/10} = \frac{-0.05}{0.05} = -1$, <BR>
+think $-1\sigma$ and then (50-68/2 = 16) 16% lies left of $-\sigma$ <BR>
+<font style="color:red">Is this the correct train of thought?
+for some reference:
+```{r}
+pbinom(45, prob=0.5, size = 100, lower.tail = TRUE)
+```
+ok, this seems close enough...
+</font>
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>Consider the father.son data. Using the CLT and assuming that the fathers are a random sample from a population of interest, what is a 95% confidence mean height in inches?
+<BR><BR><BR>Answer:<BR>
+In the population the 95% confidence interval is defined as $\mu \pm 2 \sigma$<BR>
+Because we're dealing with a sample here, one replaces $\sigma$ with $\sigma / \sqrt{n}$<BR>
+It's, by the way, an example from the syllabus itself except for the transformation to feet ...
+
+```{r, warning=FALSE, message=FALSE}
+library(UsingR)
+data(father.son)
+x <- father.son$sheight
+n <- length(x)
+mean(x) + c(-1, 1) * qnorm(.975) * sd(x) / sqrt(n)
+```
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The goal of a a confidence interval having coverage 95% is to imply that:
+<ol type="a">
+<li>If one were to repeated collect samples and reconstruct the intervals, around 95% percent of them would contain the true mean being estimated.</li>
+<li>The probability that the sample mean is in the interval is 95%.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: If one were to repeated collect samples and reconstruct the intervals, around 95% percent of them would contain the true mean being estimated.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The rate of search entries into a web site was 10 per minute when monitoring for an hour. Use R to calculate the exact Poisson interval for the rate of events per minute?
+<BR><BR><BR>Answer:<BR>
+$\lambda = 10$ seach entries per minute (this is actually $\hat \lambda$)<BR>
+$t = 1$, just talking about minutes here
+
+The Poisson interval is:
+$\hat \lambda \pm Z_{1-\alpha/2} \sqrt{\frac{\hat \lambda}{t}}$, $Z = 1.645$ for 95% confidence interval.<BR>
+$10 \pm 1.645 \sqrt{10} \approx 10 \pm 5.20$
+```{r}
+10 + c(-1,1)*qnorm(.95)*sqrt(10)
+```
+
+
+<font style="color:red">I feel like I'm not using the information that there was monitoring for an hour. Also, maybe $t = 60$ would be better? <BR>
+$\lambda = 10$ seach entries per minute (this is actually $\hat \lambda$)<BR>
+$t = 60$
+
+The Poisson interval is:
+$\hat \lambda \pm Z_{1-\alpha/2} \sqrt{\frac{\hat \lambda}{t}}$, $Z = 1.645$ for 95% confidence interval.<BR>
+$10 \pm 1.645 \sqrt{10/60} \approx 10 \pm 0.67$
+```{r}
+10 + c(-1,1)*qnorm(.95)*sqrt(10/60)
+```
+</font>
+
+
+<BR><BR></li>
+
+<!-- question --><!--
+<li>Consider a uniform distribution. If we were to sample 100 draws from a a uniform distribution (which has mean 0.5, and variance 1/12) and take their mean, $\bar X$. What is the approximate probability of getting as large as 0.51 or larger?<a href="https://www.youtube.com/watch?v=JsiLK0g3IZ4&amp;index=15&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch this video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw2.html#9">see the problem and solution here.</a>.</li>-->
+</ol>
+
+<h2 id="leanpub-auto-t-confidence-intervals"><span class="section-number">8. </span><em>t</em> Confidence intervals</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>For iid Gaussian data, the statistic $\frac{\bar X - \mu}{s / \sqrt{n}}$  must follow a: 
+<ol type="a">
+<li>Z distribution</li>
+<li>
+<em>t</em> distribution</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: Z distribution <font style="color:red">assuming Z means standard normal. If not, then the answer is perhaps t after all?</font>
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>Paired differences T confidence intervals are useful when:
+<ol type="a">
+<li>Pairs of observations are linked, such as when there is subject level matching or in a study with baseline and follow up measurements on all participants.</li>
+<li>When there was randomization of a treatment between two independent groups.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: Pairs of observations are linked, such as when there is subject level matching or in a study with baseline and follow up measurements on all participants.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The assumption that the variances are equal for the independent group T interval means that:
+<ol type="a">
+<li>The sample variances have to be nearly identical.</li>
+<li>The population variances are identical, but the sample variances may be different.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+B: The population variances are identical, but the sample variances may be different.<BR>
+<font style="color:red">But I'm not sure, can't explain why it is so.</font>
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>Load the data set <code>mtcars</code> in the <code>datasets</code> R package. Calculate a
+95% confidence interval to the nearest MPG for the variable <code>mpg</code>. <a href="https://www.youtube.com/watch?v=5BPY6JqRLbE&amp;index=19&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#3">see written solutions</a>.</li>-->
+
+<!-- question --><!--
+<li>Suppose that standard deviation of 9 paired differences is $1$. What value would the average difference have to be so that the lower endpoint of a 95%
+students t confidence interval touches zero? <a href="https://www.youtube.com/watch?v=ioDwUPCy508&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=20">Watch a video solution here</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#4">see the text here</a>.</li>-->
+
+<!-- question --><!--
+<li>An independent group Student's T interval is used instead of
+a paired T interval when:
+<ol type="a">
+<li>The observations are paired between the groups.</li>
+<li>The observations between the groups are naturally assumed to be statistically independent.</li>
+<li>As long as you do it correctly, either is fine.</li>
+<li>More details are needed to answer this question.
+<a href="https://www.youtube.com/watch?v=zJWJljxJ7Zk&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=21">watch a discussion of this problem</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#5">see the text.</a>
+</li>-->
+</ol>
+</li>
+
+<!-- question --><!--
+<li>Consider the <code>mtcars</code> dataset. Construct a 95% T interval for MPG comparing
+4 to 6 cylinder cars (subtracting in the order of 4 - 6)
+assume a constant variance. <a href="https://www.youtube.com/watch?v=QfuMgsUlu_w&amp;index=23&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#6">see the text</a>.
+</li>-->
+
+<!-- question --><!--
+<li>If someone put a gun to your head and said "Your confidence interval
+must contain what it's estimating or I'll pull the trigger", what would
+be the smart thing to do?
+<ol type="a">
+<li>Make your interval as wide as possible.</li>
+<li>Make your interval as small as possible.</li>
+<li>Call the authorities.
+<a href="https://www.youtube.com/watch?v=8zM1RV4Rb7A&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=24">Watch the video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#7">see the text.</a>
+</li>-->
+</ol>
+</li>
+
+<!-- question --><!--
+<li>Refer back to comparing MPG for 4 versus 6 cylinders (question 7).
+What do you conclude?
+<ol type="a">
+<li>The interval is above zero, suggesting 6 is better than 4 in the terms of MPG.</li>
+<li>The interval is above zero, suggesting 4 is better than 6 in the terms of MPG.</li>
+<li>The interval does not tell you anything about the hypothesis test; you have to do the test.</li>
+<li>The interval contains 0 suggesting no difference.
+<a href="https://www.youtube.com/watch?v=zUVoueHLPdo&amp;index=25&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#8">see the text.</a>
+</li>-->
+</ol>
+</li>
+
+<!-- question --><!--
+<li>Suppose that 18 obese subjects were randomized, 9 each, to a new diet pill and a placebo. Subjects' body mass indices (BMIs) were measured at a baseline and again after having received the treatment or placebo for four weeks. The average difference from follow-up to the baseline (followup - baseline) was 3 kg/m2 for the treated group and 1 kg/m2 for the placebo group. The corresponding standard deviations of the differences was 1.5 kg/m2 for the treatment group and 1.8 kg/m2 for the placebo group. The study aims to answer whether the change in BMI over the four week period appear to differ between the treated and placebo groups.
+What is the pooled variance estimate? <a href="https://www.youtube.com/watch?v=kzRzrrDWTRQ&amp;index=26&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution here</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw3.html#9">see
+the text here.</a>
+</li>-->
+</ol>
+
+<h2 id="leanpub-auto-hypothesis-testing"><span class="section-number">9. </span>Hypothesis testing</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>Which hypothesis is typically assumed to be true in hypothesis testing?
+<ol type="a">
+<li>The null.</li>
+<li>The alternative.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: The null.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The type I error rate controls what?
+<BR><BR><BR>Answer:<BR>
+"We have fixed $\alpha$ to be low, so if we reject $H_0$ (either our model is wrong) or there is a low probability that we have made an error."<BR>
+The probability that we reject $H_0$ while it is actually true.
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>Load the data set  mtcars  in the  datasets  R package. Assume that the data set mtcars is a random sample. Compute the mean MPG, $\bar x,$ of this sample. You want to test whether the true MPG is $\mu_0$ or smaller using a one sided 5% level test. ($H_0 : \mu = \mu_0$ versus $H_a : \mu < \mu_0$). Using that data set and a Z test: Based on the mean MPG of the sample $\bar x,$ and by using a Z test: what is the smallest value of $\mu_0$ that you would reject for (to two decimal places)? 
+<a href="https://www.youtube.com/watch?v=gReR0uxLnIA&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=27">Watch a video solution here</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#3">see the text here</a>.</li>-->
+
+<!-- question --><!--
+<li>Consider again the <code>mtcars</code> dataset. Use a two group t-test to test
+the hypothesis that the 4 and 6 cyl cars have the same mpg.  Use
+a two sided test with unequal variances. Do you reject? <a href="https://www.youtube.com/watch?v=Zo5TirzS9rU&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=28">Watch the video here</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#4">see the text here</a>
+</li>-->
+
+<!-- question --><!--
+<li>A sample of 100 men yielded an average PSA level of 3.0 with a sd of 1.1. What are the complete set of values that a 5% two sided Z test of $H_0 : \mu = \mu_0$ would fail to reject the null hypothesis for? <a href="https://www.youtube.com/watch?v=TooyEaVgLZc&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=29">Watch the video solution</a> and
+<a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#5">see the text</a>.</li>-->
+
+<!-- question --><!--
+<li>You believe the coin that you're flipping is biased towards heads. You get 55 heads out of
+100 flips. Do you reject at the 5% level that the coin is fair? <a href="https://www.youtube.com/watch?v=0sqOErsfhqo&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=30">Watch a video solution</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#6">see the text</a>.</li>-->
+
+<!-- question --><!--
+<li>Suppose that in an AB test, one advertising scheme led to an average of 10 purchases per day for a sample of 100 days, while the other led to 11 purchases per day, also for a sample of 100 days.
+Assuming a common standard deviation of 4 purchases per day.
+Assuming that the groups are independent and that they days are iid, perform a Z test of
+equivalence. Do you reject at the 5% level? <a href="https://www.youtube.com/watch?v=Or4ly4rOiaA&amp;index=32&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#8">see the
+text.</a>-->
+</li>
+
+<!-- question --><!--
+<li>A confidence interval for the mean contains:
+<ol type="a">
+<li>All of the values of the hypothesized mean for which we would fail to reject with $\alpha = 1 - Conf. Level$.</li>
+<li>All of the values of the hypothesized mean for which we would fail to reject with $2 \alpha = 1 - Conf. Level$.</li>
+<li>All of the values of the hypothesized mean for which we would reject with $\alpha = 1 - Conf. Level$.</li>
+<li>All of the values of the hypothesized mean for which we would reject with $2 \alpha = 1 - Conf. Level$.
+<a href="https://www.youtube.com/watch?v=UiNV1mXQGLs&amp;index=33&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#9">see the text</a>.</li>-->
+</ol>
+</li>
+
+<!-- question --><!--
+<li>In a court of law, all things being equal, if via policy you require a lower
+standard of evidence to convict people then
+<ol type="a">
+<li>Less guilty people will be convicted.</li>
+<li>More innocent people will be convicted.</li>
+<li>More Innocent people will be not convicted.
+<a href="https://www.youtube.com/watch?v=GlKPG24bZMI&amp;index=36&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#12">see the text</a>.</li>-->
+</ol>
+</li>
+</ol>
+
+<h2 id="leanpub-auto-p-values"><span class="section-number">10. </span>P-values</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>P-values are probabilities that are calculated assuming which hypothesis is true?
+<ol type="a">
+<li>the alternative</li>
+<li>the null</li>
+</ol>
+<BR><BR><BR>Answer:<BR>
+B: the null
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>You get a P-value of 0.06. Would you reject for a type I error rate of 0.05?
+<ol type="a">
+<li>Yes you would reject the null</li>
+<li>No you would not reject the null</li>
+<li>It depends on information not given</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+B: No you would not reject the null<BR>
+$H_0$ is rejected when $P_{value} < \alpha$, as $0.06 > 0.05$ we fail to reject.
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>The proposed procedure for getting a two sided P-value for the exact binomial test considered here is what?
+<ol type="a">
+<li>Multiplying the one sided P-value by one half</li>
+<li>Doubling the larger of the two one sided P-values</li>
+<li>Doubling the smaller of the two one sided P-values</li>
+<li>No procedure exists</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+C: Doubling the smaller of the two one sided P-values
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>Consider again the <code>mtcars</code> dataset. Use a two group t-test to test
+the hypothesis that the 4 and 6 cyl cars have the same mpg.  Use
+a two sided test with unequal variances. Give a P-value. <a href="https://www.youtube.com/watch?v=Zo5TirzS9rU&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=28">Watch the video here</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#4">see the text here</a>
+</li>-->
+
+<!-- question --><!--
+<li>You believe the coin that you're flipping is biased towards heads. You get 55 heads out of
+100 flips. Give an exact P-value for the hypothesis that the coin is fair. <a href="https://www.youtube.com/watch?v=0sqOErsfhqo&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=30">Watch a video solution</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#6">see the text</a>.</li>
+<li>A web site was monitored for a year and it received 520 hits per day. In the first
+30 days in the next year, the site received 15,800 hits. Assuming that web hits
+are Poisson. Give an exact one sided P-value to the hypothesis that web hits are up this year over last. Do you reject? <a href="https://www.youtube.com/watch?v=cE_88-Q7TX0&amp;index=31&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch the video solutions</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#7">see the problem text</a>.</li>-->
+
+<!-- question --><!--
+<li>Suppose that in an AB test, one advertising scheme led to an average of 10 purchases per day for a sample of 100 days, while the other led to 11 purchases per day, also for a sample of 100 days.
+Assuming a common standard deviation of 4 purchases per day.
+Assuming that the groups are independent and that they days are iid, perform a Z test of
+equivalence. Give a P-value for the test? <a href="https://www.youtube.com/watch?v=Or4ly4rOiaA&amp;index=32&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#8">see the
+text.</a>
+</li>-->
+
+<!-- question --><!--
+<li>Consider the <code>mtcars</code> data set.
+<ol type="a">
+<li>Give the p-value for a t-test comparing MPG for 6 and 8 cylinder cars assuming equal variance, as a proportion to 3 decimal places.</li>
+<li>Give the associated P-value for a z test.</li>
+<li>Give the common standard deviation estimate for MPG across cylinders to 3 decimal places.</li>
+<li>Would the t test reject at the two sided 0.05 level (0 for no 1 for yes)?
+<a href="https://www.youtube.com/watch?v=m0B5p0w2wJI&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L&amp;index=37">Watch a video solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#13">see the text</a>. </li>-->
+</ol>
+</li>
+</ol>
+
+<h2 id="leanpub-auto-power"><span class="section-number">11. </span>Power</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>Power is a probability calculation assuming which is true:
+<ol type="a">
+<li>The null hypothesis</li>
+<li>The alternative hypothesis</li>
+<li>Both the null and alternative</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: The null hypothesis<BR>
+<font style="color:red">In hypothesis testing it's always about $H_0$ being true, unless we can prove that it's not. The bigger the power, the more 'prove' that $H_0$ is not true.</font>
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>As your sample size gets bigger, all else equal, what do you think would happen to power?
+<ol type="a">
+<li>It would get larger</li>
+<li>It would get smaller</li>
+<li>It would stay the same</li>
+<li>It cannot be determined from the information given</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+A: It would get larger<BR>
+<font style="color:blue">I could make a visual when I figure out how to give an area a color in a plot. Hints on how to do that are more than welcome :-)</font>
+
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>What happens to power as $\mu_a$ gets further from $\mu_0$? 
+<ol type="a">
+<li>Power decreases</li>
+<li>Power increases</li>
+<li>Power stays the same</li>
+<li>Power oscillates</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+B: Power increases
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>In the context of calculating power, the effect size is?
+<ol type="a">
+<li>The null mean divided by the standard deviation</li>
+<li>The alternative mean divided by the standard error</li>
+<li>The difference between the null and alternative means divided by the standard deviation</li>
+<li>The standard error divided by the null mean</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+C: The difference between the null and alternative means divided by the standard deviation
+<BR><BR>
+</li>
+
+<!-- question --><!--
+<li>Recall this problem "Suppose that in an AB test, one advertising scheme led to an average of 10 purchases per day for a sample of 100 days, while the other led to 11 purchases per day, also for a sample of 100 days.
+Assuming a common standard deviation of 4 purchases per day." Assuming that 10 purchases per day is a benchmark null value,
+that days are iid and that the standard deviation is 4 purchases for day. Suppose that you
+plan on sampling 100 days. What would be the power for a one sided 5%
+Z mean test that purchases per day
+have increased under the alternative of $\mu = 11$ purchase per day? <a href="https://www.youtube.com/watch?v=RiS6EFnPYY8&amp;index=34&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch a video
+solution</a> and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#10">see the text</a>.</li>
+<li>Researchers would like to conduct a study of healthy adults to detect a four year mean brain volume loss of .01 mm3. Assume that the standard deviation of four year volume loss in this population is .04 mm3.  What is necessary sample size for the study for a 5% one sided test versus a null hypothesis of no volume loss to achieve 80% power? <a href="https://www.youtube.com/watch?v=lrXyJrtatzk&amp;index=35&amp;list=PLpl-gQkQivXhHOcVeU3bSJg78zaDYbP9L">Watch the video solution</a>
+and <a href="http://bcaffo.github.io/courses/06_StatisticalInference/homework/hw4.html#11">see the text</a>.</li> -->
+</ol>
+
+<h2 id="leanpub-auto-the-bootstrap-and-resampling"><span class="section-number">12. </span>The bootstrap and resampling</h2>
+
+<ol class="numeric">
+
+<!-- question -->
+<li>The bootstrap uses what to estimate the sampling distribution of a statistic?
+<ol type="a">
+<li>The true population distribution</li>
+<li>The empirical distribution that puts probability 1/n for each observed data point</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+B: The empirical distribution that puts probability 1/n for each observed data point
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>When performing the bootstrap via Monte Carlo resampling for a data set of size n which is true? Assume that you're going to do 10,000 bootstrap resamples?
+<ol type="a">
+<li>You sample n complete data sets of size 10,000 with replacement</li>
+<li>You sample 10,000 complete data sets of size n without replacement</li>
+<li>You sample 10,000 complete data sets of size n with replacement</li>
+<li>You sample n complete data sets of size 10,000 without replacement</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+C: You sample 10,000 complete data sets of size n with replacement<BR>
+B and D you can reject immediately, as the whole idea is that you use your sample as a substitute population. 
+<BR><BR>
+</li>
+
+<!-- question -->
+<li>Permutation tests do what?
+<ol type="a">
+<li>Creates a null distribution for a hypothesis test by permuting a predictor variable.</li>
+<li>Creates a null distribution by resampling from the response with replacement.</li>
+<li>Creates an alternative distribution by permuting group labels.</li>
+<li>Creates confidence intervals by resampling with replacement.</li>
+</ol>
+
+<BR><BR><BR>Answer:<BR>
+C: Creates an alternative distribution by permuting group labels.
+<BR><BR>
+</li>
+</ol>
